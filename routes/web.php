@@ -1,0 +1,42 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AdminController;
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes for BiteBarakah 🍰
+|--------------------------------------------------------------------------
+*/
+
+// 🌟 Public Routes (no login required)
+Route::get('/', function () {
+    return view('home'); // or whatever your correct homepage view is
+});
+
+Route::get('/dashboard', function () {
+    return view('dashboard');
+});
+
+Route::get('/order', function () {
+    return view('order');
+});
+
+Route::get('/admin/orders', [AdminController::class, 'viewOrders'])->name('admin.orders')->middleware('auth');
+Route::post('/order-submit', [OrderController::class, 'submit'])->name('order.submit');
+
+// 🌟 Authenticated User Routes
+
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // 🌟 Admin Panel Routes (protected)
+    Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
+    Route::get('/admin/orders', [AdminController::class, 'viewOrders'])->name('admin.orders');
+    Route::get('/admin/download-orders', [AdminController::class, 'downloadPDF'])->name('admin.downloadPDF');
+
+// 🌟 Breeze Auth Routes (login, register, etc.)
+require __DIR__.'/auth.php';
