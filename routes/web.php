@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminController;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,12 +14,14 @@ use App\Http\Controllers\AdminController;
 
 // 🌟 Public Routes (no login required)
 Route::get('/', function () {
-    return view('home'); // or whatever your correct homepage view is
+    return Auth::check() ? redirect('/home') : redirect()->route('register');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-});
+
+Route::get('/home', function () {
+    return view('home');
+})->middleware('auth')->name('home');
+
 
 Route::get('/order', function () {
     return view('order');
