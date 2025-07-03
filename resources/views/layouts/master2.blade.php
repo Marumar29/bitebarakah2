@@ -51,25 +51,6 @@
         <span>.</span>
       </a>
 
-      <nav id="navmenu" class="navmenu">
-        <ul>
-          <li><a href="{{ url('/#hero') }}">Home</a></li>
-          <li><a href="{{ url('/#about') }}">About</a></li>
-         <li><a href="{{ url('/#desserts') }}">Desserts</a></li>
-          <li><a href="{{ url('/#events') }}">Events</a></li>
-          <li><a href="/order">Order</a></li>
-          <li><a href="#contact">Contact</a></li>
-          <li><a href="{{ route('admin.index') }}">Admin Panel</a></li>
-          <li>
-  <form method="POST" action="{{ route('logout') }}">
-    @csrf
-    <button type="submit" class="btn btn-outline-danger">Logout</button>
-  </form>
-</li>
-
-        </ul>
-        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
-      </nav>
 
     </div>
   </header>
@@ -157,15 +138,6 @@
   <script>
   AOS.init(); // <-- this activates it!
 </script>
-
-
-  <!-- Main JS File -->
-  <script src="{{ asset('assets/js/main.js') }}"></script>
-
-  <!-- Page-specific Scripts -->
-  @yield('scripts')
-
-</body>
 
 
 </html>
