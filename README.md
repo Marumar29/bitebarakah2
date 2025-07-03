@@ -1,6 +1,6 @@
 # 🛡️ INFO 4345 Web Application Security Project
 **Project Name:** BiteBarakah2  
-**Course:** INFO 4345  
+**Course:** INFO 4345 Web Application Security 
 **Semester:** Semester 2, 2024/2025  
 **Institution:** International Islamic University Malaysia
 **Group Name:** Last  
@@ -24,7 +24,7 @@ Based on the given rubrics, each group member focused on specific security crite
 - Result: [Summary of ZAP results]
   - X alerts resolved
   - Y critical issues patched
-  - See full report in `ZAP_Report.pdf` or `ZAP_Report.html`
+  - See full report in `2025-06-30-ZAP-Report-bitebarakah2.html`
 
 - Before Fixes
     🟠 Medium Risk (2 alerts)
