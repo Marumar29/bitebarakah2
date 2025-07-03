@@ -24,4 +24,9 @@
             </x-primary-button>
         </div>
     </form>
+
+    <form method="POST" action="/submit">
+        @csrf
+        <!-- your form inputs -->
+    </form>
 </x-guest-layout>

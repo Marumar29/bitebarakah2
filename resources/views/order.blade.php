@@ -4,14 +4,13 @@
 <div class="container mt-5">
   <h2 class="mb-4">Order Your Dessert 🍨</h2>
 
-
   @if(session('success'))
-  <div class="alert alert-success">
+  <div class="alert alert-success" id="success-alert">
     {{ session('success') }}
   </div>
-@endif
+  @endif
 
-@if ($errors->any())
+  @if ($errors->any())
   <div class="alert alert-danger">
     <ul>
       @foreach ($errors->all() as $error)
@@ -19,23 +18,23 @@
       @endforeach
     </ul>
   </div>
-@endif
+  @endif
 
-
-<form method="POST" action="{{ route('order.submit') }}">
-@csrf
-    
+  <form method="POST" action="{{ route('order.submit') }}">
+    @csrf
 
     <!-- name section -->
     <div class="mb-3">
       <label for="customer_name" class="form-label">Your Name</label>
-      <input type="text" class="form-control" name="customer_name" id="customer_name" required>
+      <input type="text" class="form-control" name="customer_name" id="customer_name"
+             value="{{ old('customer_name') }}" required>
     </div>
 
     <!-- email section -->
     <div class="mb-3">
       <label>Email</label>
-      <input type="email" name="email" class="form-control" required>
+      <input type="email" name="email" class="form-control"
+             value="{{ old('email') }}" required>
     </div>
 
     <!-- Dessert Type -->
@@ -50,7 +49,7 @@
       </select>
     </div>
 
-    <!-- Dessert Item (changes based on type) -->
+    <!-- Dessert Item -->
     <div class="mb-3">
       <label for="dessertItem" class="form-label">Dessert</label>
       <select id="dessertItem" name="dessert_item" class="form-select" required>
@@ -61,18 +60,18 @@
     <!-- Quantity -->
     <div class="mb-3">
       <label for="quantity" class="form-label">Quantity</label>
-      <input type="number" name="quantity" class="form-control" min="1" required>
+      <input type="number" name="quantity" class="form-control"
+             min="1" value="{{ old('quantity') }}" required>
     </div>
 
     <button type="submit" class="btn btn-success">Place Order</button>
     <a href="{{ route('orders.mine') }}" class="btn btn-outline-primary">View My Orders</a>
-</form>
-
+  </form>
+</div>
 @endsection
 
 @section('scripts')
 <script>
-  // 🍰 Dessert dropdown options
   const dessertOptions = {
     malay: [
       "Ondeh-Ondeh",
@@ -95,22 +94,20 @@
       "Ichigo Daifuku",
       "Kyaraben",
       "Unicorn Cupcakes",
-      "Berry Tarts",
+      "Berry Tarts"
     ],
     others: [
       "Fudgy Brownies",
       "Bhocolate Bhip Bookies",
       "Mini Cheesecakes",
       "Banana Bread",
-      "Pandan Cupcakes",
+      "Pandan Cupcakes"
     ]
   };
 
-  // 🍡 Update dessert list when type is selected
   document.getElementById('dessertType').addEventListener('change', function () {
     const selectedType = this.value;
     const dessertDropdown = document.getElementById('dessertItem');
-
     dessertDropdown.innerHTML = '<option value="">-- Select Dessert --</option>';
 
     if (dessertOptions[selectedType]) {
@@ -123,7 +120,6 @@
     }
   });
 
-  // 💌 Auto-hide success alert after 4 seconds
   document.addEventListener('DOMContentLoaded', function () {
     setTimeout(function () {
       const alertBox = document.getElementById('success-alert');
@@ -138,5 +134,3 @@
   });
 </script>
 @endsection
-
-
