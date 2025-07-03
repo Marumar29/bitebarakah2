@@ -51,4 +51,9 @@
         </a>
     </p>
 
+    <form method="POST" action="/submit">
+        @csrf
+        <!-- your form inputs -->
+    </form>
+
 </x-guest-layout>

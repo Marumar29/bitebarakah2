@@ -3,6 +3,8 @@
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Profile') }}
         </h2>
+         <p class="text-sm text-gray-500">Name: {{ Auth::user()->name }}</p>
+        <p class="text-sm text-gray-500">Email: {{ Auth::user()->email }}</p>
     </x-slot>
 
     <div class="py-12">

@@ -18,13 +18,15 @@
 <!-- name section -->
 <div class="mb-3">
   <label for="customer_name" class="form-label">Your Name</label>
-  <input type="text" class="form-control" name="customer_name" id="customer_name" required>
+  <input type="text" class="form-control" name="customer_name" id="customer_name"
+       value="{{ old('customer_name') }}" required>
 </div>
 
 <!-- email section -->
 <div class="mb-3">
   <label>Email</label>
-  <input type="email" name="email" class="form-control" required>
+  <input type="email" name="email" class="form-control"
+       value="{{ old('email') }}" required>
 </div>
 
 <!-- Dessert Type -->
@@ -50,7 +52,8 @@
 <!-- Quantity -->
 <div class="mb-3">
   <label for="quantity" class="form-label">Quantity</label>
-  <input type="number" name="quantity" class="form-control" min="1" required>
+  <input type="number" name="quantity" class="form-control"
+       min="1" value="{{ old('quantity') }}" required>
 </div>
 
 <button type="submit" class="btn btn-success">Place Order</button>
