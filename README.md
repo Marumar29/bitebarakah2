@@ -440,7 +440,7 @@ The application connects to the MySQL database using the .env file. I ensured th
 
 ---
 ### ✅ Rubric 13. File Security Principles (File Access Control)
-- - File and directory permissions follow the principle of least privilege, restricting access to only necessary users/processes. User input is never directly concatenated into file paths.
+- File and directory permissions follow the principle of least privilege, restricting access to only necessary users/processes. User input is never directly concatenated into file paths.
 
 **File/Directory Access Control:**
 I ensured storage, .env, and backend files are not accessible publicly by:
@@ -457,4 +457,41 @@ Setting proper permissions on sensitive files.
 I did not concatenate user input into file paths directly. All file uploads (if any) use Laravel’s built-in methods to handle file names securely.
 ✅ Ensured no dynamic path injection from user input.
 
+---
+
+### ✅ After — Summary Conclusion
+
+After identifying and addressing security issues through OWASP ZAP scanning and rubric-guided improvements, our Laravel application bitebarakah2 has been significantly hardened against common web vulnerabilities.
+
+All 13 rubric categories were addressed by the group, with specific fixes including:
+
+✅ Strict input validation across all user forms
+
+✅ Secure password storage with argon2id hashing
+
+✅ Enforcement of password policies and login rate-limiting
+
+✅ Session regeneration, secure cookies, and HttpOnly flags
+
+✅ Two-Factor Authentication (2FA) for admin accounts
+
+✅ Full Role-Based Access Control (RBAC) and least-privilege permissions
+
+✅ Content Security Policy (CSP) headers added to prevent XSS and clickjacking
+
+✅ CSRF protection with Laravel's built-in token system
+
+✅ SQL injection prevention via Laravel’s Eloquent ORM
+
+✅ Server header hardening and file access protection
+
+As a result:
+
+All high-risk and most medium-risk vulnerabilities reported by ZAP have been mitigated.
+
+Our application now aligns with best practices in web application security, ensuring safer authentication, authorization, and user interaction.
+
+This enhancement process has improved not only the system’s security but also the team's understanding of real-world secure coding practices.
+
+📄 [View Full ZAP Report After](reports/2025-06-30-ZAP-Report-bitebarakah2 After.html)
 
