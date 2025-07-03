@@ -5,8 +5,8 @@
 **Institution:** International Islamic University Malaysia
 **Group Name:** Last  
 **Members:**
-- Raja Muhamad Umar [Rubrics 1–4]
-- [Teammate 2 Name] [Rubrics 5–8]
+- Raja Muhamad Umar (2119191) [Rubrics 1–4]
+- Muhammad Afzal Bin Mohd Nor (2123023) [Rubrics 5–8]
 - [Teammate 3 Name] [Rubrics 9–13]
 
 ---
@@ -87,6 +87,149 @@ $request->validate([
   ],
 ]);
 
+---
 
-<!-- Force update -->
-<!-- Dummy test commit -->
+### ✅ Rubric 5: Authentication – Session Management
+
+**Explanation:**
+
+Laravel ensures strong session management by:
+- Regenerating session IDs after login (prevents session fixation)
+- Auto-expiring sessions after a defined timeout
+- Securing cookies with `HttpOnly`, `Secure`, and `SameSite` flags
+
+**Code:**
+
+```php
+// app/Http/Controllers/Auth/AuthenticatedSessionController.php
+$request->session()->regenerate();
+
+// .env
+SESSION_LIFETIME=60
+
+// config/session.php
+'secure' => env('SESSION_SECURE_COOKIE', true),
+'http_only' => true,
+'same_site' => 'lax',
+
+---
+
+### ✅ Rubric 6: Authentication – Multi-Factor Authentication
+
+**Explanation:**
+
+To enhance security, 2FA (Time-based One-Time Password) was added for admin users using the pragmarx/google2fa package.
+Admins can enable 2FA from a dedicated page, generating a secret key and recovery codes. These can be used with apps like Google Authenticator.
+
+**Code:**
+
+// Enable 2FA: routes/web.php
+use Illuminate\Support\Str;
+use PragmaRX\Google2FA\Google2FA;
+
+Route::post('/admin/2fa/enable', function () {
+    $user = auth()->user();
+    $user->forceFill([
+        'two_factor_secret' => encrypt((new Google2FA)->generateSecretKey()),
+        'two_factor_recovery_codes' => encrypt(json_encode(
+            collect(range(1, 8))->map(fn () => Str::random(10))->all()
+        )),
+    ])->save();
+
+    return back()->with('status', '2FA enabled. Store your recovery codes.');
+})->middleware(['auth', 'is_admin'])->name('admin.2fa.enable');
+
+<!-- View: resources/views/admin/2fa.blade.php -->
+@if (auth()->user()->two_factor_secret)
+    <p>✅ 2FA is enabled</p>
+    <form method="POST" action="{{ route('admin.2fa.disable') }}">
+        @csrf
+        <button type="submit">Disable 2FA</button>
+    </form>
+@else
+    <form method="POST" action="{{ route('admin.2fa.enable') }}">
+        @csrf
+        <button type="submit">Enable 2FA</button>
+    </form>
+@endif
+
+---
+
+### ✅ Rubric 7: Authorization – Default Permissions
+
+**Explanation:**
+
+Basic access control is enforced:
+
+-Guests are redirected to the registration page.
+
+-Only authenticated users can access /home.
+
+-Non-admin users trying to access admin routes are shown a 403 Forbidden page.
+
+**Code:**
+
+// web.php
+Route::get('/', function () {
+    return Auth::check() ? redirect('/home') : redirect()->route('register');
+});
+
+Route::get('/home', function () {
+    return view('home');
+})->middleware('auth')->name('home');
+
+// Inside controller
+if (!auth()->check() || !auth()->user()->is_admin) {
+    abort(403); // Forbidden access
+}
+
+---
+
+### ✅ Rubric 8: Authorization – Role-Based Access Control (RBAC)
+
+**Explanation:**
+
+Access to admin routes is protected based on roles:
+
+-An is_admin column is added to the users table
+
+-Middleware is_admin is used to protect sensitive admin routes
+
+-Only users with is_admin = 1 can access these routes
+
+**Code:**
+
+// Migration
+Schema::table('users', function (Blueprint $table) {
+    $table->boolean('is_admin')->default(false);
+});
+
+// Middleware: app/Http/Middleware/IsAdmin.php
+public function handle(Request $request, Closure $next)
+{
+    if (!auth()->user()->is_admin) {
+        abort(403);
+    }
+
+    return $next($request);
+}
+
+// Route group with middleware
+Route::middleware(['auth', 'is_admin'])->group(function () {
+    Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
+    Route::get('/admin/orders', [AdminController::class, 'viewOrders'])->name('admin.orders');
+});
+
+---
+
+**How to Test**
+
+-✅ Log in as a normal user → access to /home ✅ but access to /admin ❌ (403) (Rubric 7: Authorization – Default Permissions)
+
+-✅ Log in as an admin user (is_admin = 1 in DB) → access to /admin ✅ (Rubric 8: Authorization – Role-Based Access Control (RBAC))
+
+-✅ Go to /admin/2fa → enable 2FA and scan with Google Authenticator (Rubric 6: Authentication – Multi-Factor Authentication)
+
+-✅ Session auto-expires after timeout (SESSION_LIFETIME), and regenerates on login (Rubric 5: Authentication – Session Management)
+
+
