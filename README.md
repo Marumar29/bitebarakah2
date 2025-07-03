@@ -7,7 +7,7 @@
 **Members:**
 - Raja Muhamad Umar (2119191) [Rubrics 1–4]
 - Muhammad Afzal Bin Mohd Nor (2123023) [Rubrics 5–8]
-- [Teammate 3 Name] [Rubrics 9–13]
+- Muhammad Afiff Firdaus Bin Abdullah (2120573) [Rubrics 9–13]
 
 ---
 
@@ -205,7 +205,7 @@ if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
 // Lockout occurs after 5 attempts
 ```
 ---
-
+### 🧾 RUBRICS 5-8 (Handled by Afzal)
 ### ✅ Rubric 5: Authentication – Session Management
 
 **Explanation:**
@@ -348,5 +348,113 @@ Route::middleware(['auth', 'is_admin'])->group(function () {
 -✅ Go to /admin/2fa → enable 2FA and scan with Google Authenticator (Rubric 6: Authentication – Multi-Factor Authentication)
 
 -✅ Session auto-expires after timeout (SESSION_LIFETIME), and regenerates on login (Rubric 5: Authentication – Session Management)
+
+---
+### 🧾 RUBRICS 9-13 (Handled by Afiff)
+### ✅ Rubric 9: Browser Security Principles (Cross-Site Scripting (XSS) Prevention)
+- All user-supplied data displayed in the browser is contextually encoded. Content Security Policy (CSP) is implemented.
+
+**XSS Prevention:**
+I used Blade’s default escaping syntax {{ $variable }} instead of {!! !!} to ensure all user-supplied data is encoded before displaying it in the browser.
+
+✅ Implemented in views like profile.blade.php, dashboard.blade.php, and order.blade.php.
+**Code:**
+```php
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Dashboard') }}
+        </h2>
+    </x-slot>
+
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 text-gray-900">
+                    {{ __("You're logged in!") }}
+
+                    <!-- ✅ Safely show user's name -->
+                    <p>Welcome, {{ Auth::user()->name }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</x-app-layout>
+```
+---
+### ✅ Rubric 10. Browser Security Principles (Cross-Site Request Forgery (CSRF) Prevention)
+- Anti-CSRF tokens (synchronizer tokens) are used for all state-changing requests. SameSite cookies are properly configured.
+
+**CSP (Content Security Policy):**
+I added the ContentSecurityPolicy middleware to enforce a strict CSP policy. This helps to mitigate XSS by only allowing scripts/styles from trusted sources.
+
+✅ Implemented in app/Http/Middleware/ContentSecurityPolicy.php and registered in Kernel.php.
+**Code:**
+```php
+namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Http\Request;
+
+class ContentSecurityPolicy
+{
+    public function handle(Request $request, Closure $next)
+    {
+        $response = $next($request);
+
+        $response->headers->set('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self'; object-src 'none';");
+
+        return $response;
+    }
+}
+```
+CSRF Protection:
+All forms include @csrf to protect against CSRF attacks by generating synchronizer tokens. Laravel handles token validation automatically.
+✅ Applied in all form views like order.blade.php.
+
+**Code inserted**
+```php
+\App\Http\Middleware\ContentSecurityPolicy::class,
+```
+---
+### ✅ Rubric 11. Database Security Principles (SQL Injection Prevention)
+- All database queries use parameterized statements, prepared statements, or ORM frameworks that prevent SQL injection.
+
+**SQL Injection Prevention:**
+Laravel uses Eloquent ORM to interact with the database. This means all queries are automatically parameterized and protected from SQL injection.
+✅ Used in User model and controllers that access user data.
+
+use Illuminate\Foundation\Auth\User as Authenticatable;
+And then:
+
+class User extends Authenticatable
+➡️ Authenticatable itself extends Eloquent's base model, which means your User model is an Eloquent model.
+
+---
+### ✅ Rubric 12. Database Security Principles (Database Access Control)
+- Database users have the principle of least privilege applied; application connects with minimal required permissions.
+
+**Database Access Control:**
+The application connects to the MySQL database using the .env file. I ensured the database user in .env only has minimal privileges (e.g., SELECT, INSERT, UPDATE).
+✅ Used default .env config and did not grant full/root access.
+
+---
+### ✅ Rubric 13. File Security Principles (File Access Control)
+- - File and directory permissions follow the principle of least privilege, restricting access to only necessary users/processes. User input is never directly concatenated into file paths.
+
+**File/Directory Access Control:**
+I ensured storage, .env, and backend files are not accessible publicly by:
+
+Only exposing the public/ folder via the web server (Apache).
+
+DocumentRoot "C:/xampp/htdocs/your-laravel-project/public"
+<Directory "C:/xampp/htdocs/your-laravel-project/public">
+
+Setting proper permissions on sensitive files.
+✅ Followed Laravel’s default .gitignore which excludes sensitive files from being pushed.
+
+**Avoided Dangerous File Paths:**
+I did not concatenate user input into file paths directly. All file uploads (if any) use Laravel’s built-in methods to handle file names securely.
+✅ Ensured no dynamic path injection from user input.
 
 
