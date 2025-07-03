@@ -1,66 +1,90 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🛡️ INFO 4345 Web Application Security Project
+**Project Name:** BiteBarakah2  
+**Course:** INFO 4345  
+**Semester:** Semester 2, 2024/2025  
+**Institution:** International Islamic University Malaysia
+**Group Name:** Last  
+**Members:**
+- Raja Muhamad Umar [Rubrics 1–4]
+- [Teammate 2 Name] [Rubrics 5–8]
+- [Teammate 3 Name] [Rubrics 9–13]
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+---
 
-## About Laravel
+## 🔍 Overview
+This project is an enhancement of our previous Laravel-based web application `bitebarakah2`, which has been evaluated and improved based on 13 web application security principles aligned with the course rubric and OWASP best practices.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Based on the given rubrics, each group member focused on specific security criteria, and changes were implemented across authentication, validation, session handling, authorization, browser security, database access, and file protection.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## ✅ Vulnerability Scan Report (ZAP)
+- Tool: OWASP ZAP vX.X.X
+- Target: http://127.0.0.1:8000
+- Result: [Summary of ZAP results]
+  - X alerts resolved
+  - Y critical issues patched
+  - See full report in `ZAP_Report.pdf` or `ZAP_Report.html`
 
-## Learning Laravel
+- Before Fixes
+    🟠 Medium Risk (2 alerts)
+    1. Content Security Policy (CSP) Header Not Set
+        - Description: Missing CSP headers means browsers have no restrictions on where content (e.g., JS, fonts, CSS) can be loaded from. This increases risk of XSS and code injection.
+        - Pages Affected: /login, /register, /home, /forgot-password, /sitemap.xml
+        - Fix suggestion: Add a Content-Security-Policy header in your Laravel middleware.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+    2. Missing Anti-clickjacking Header (X-Frame-Options)
+        - Description: Your site doesn’t block iframe embedding, making it vulnerable to clickjacking.
+        - Pages Affected: /login, /register, /home, /forgot-password
+        - Fix suggestion: Add X-Frame-Options: DENY or use CSP frame-ancestors 'none';.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+    🟡 Low Risk (5 alerts)
+    1. Big Redirect Detected
+        - Description: Large redirect responses may unintentionally leak sensitive information in the response body.
+        - Pages Affected: /, /login, /register, /home, /forgot-password
+    2. Cookie Missing HttpOnly Flag
+        - Description: Cookies without HttpOnly are accessible to JavaScript, increasing risk of session hijacking.
+        - Fix suggestion: Ensure cookies are set with HttpOnly.
+    3. Cross-Domain JS File Inclusion
+        - Description: External scripts (like Google Fonts or JSCDN) were loaded without CSP restrictions.
+        - Fix suggestion: Use CSP to restrict allowed JS origins.
+    4. Server Leaks Info via X-Powered-By Header
+        - Description: This header exposes technology stack info (e.g., PHP), which helps attackers.
+        - Fix suggestion: Remove this header in Laravel or your server config.
+    5. Missing X-Content-Type-Options Header
+        - Description: Without this, browsers may attempt MIME-type sniffing, which can lead to XSS.
+        - Fix suggestion: Set X-Content-Type-Options: nosniff.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+    ℹ️ Informational (3 alerts)
+    1. Authentication Request Identified
+        - ZAP detected login forms on the site.
+    2. Session Management Response Identified
+        - Session tokens were found in responses (normal for login systems).
+    3. User-Agent Fuzzing
+        - No exploit found, just ZAP testing different user-agents.
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+## 🔒 Rubric-based Security Enhancements
 
-### Premium Partners
+### 🧾 Rubrics 1–4 (Handled by Umar)
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+---
 
-## Contributing
+### ✅ **Rubric 1: Input Validation**
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+**Issue (Before):**  
+- No validation in `OrderController`
+- Basic rules only for registration/login
 
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+**Fix (After):**
+- Applied strict server-side validation:
+```php
+$request->validate([
+  'name' => 'required|string|max:100',
+  'email' => 'required|email:rfc,dns|max:255|unique:users,email',
+  'password' => [
+    'required', 'string', 'min:8', 'confirmed',
+    'regex:/[A-Z]/', 'regex:/[a-z]/', 'regex:/[0-9]/', 'regex:/[@$!%*#?&]/',
+  ],
+]);
