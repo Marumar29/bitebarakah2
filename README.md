@@ -22,10 +22,6 @@ Based on the given rubrics, each group member focused on specific security crite
 - Tool: OWASP ZAP vX.X.X
 - Target: http://127.0.0.1:8000
 - Result: [Summary of ZAP results]
-  - X alerts resolved
-  - Y critical issues patched
-  - See full report in `2025-06-30-ZAP-Report-bitebarakah2.html`
-
 - Before Fixes
     🟠 Medium Risk (2 alerts)
     1. Content Security Policy (CSP) Header Not Set
@@ -63,6 +59,8 @@ Based on the given rubrics, each group member focused on specific security crite
     3. User-Agent Fuzzing
         - No exploit found, just ZAP testing different user-agents.
 
+📄 [View Full ZAP Report](reports/2025-06-30-ZAP-Report-bitebarakah2.html)
+
 ---
 
 ## 🔒 Rubric-based Security Enhancements
@@ -88,3 +86,7 @@ $request->validate([
     'regex:/[A-Z]/', 'regex:/[a-z]/', 'regex:/[0-9]/', 'regex:/[@$!%*#?&]/',
   ],
 ]);
+
+
+<!-- Force update -->
+<!-- Dummy test commit -->
