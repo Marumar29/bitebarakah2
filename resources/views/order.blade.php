@@ -72,65 +72,36 @@
 
 @section('scripts')
 <script>
-  const dessertOptions = {
-    malay: [
-      "Ondeh-Ondeh",
-      "Kuih Lapis",
-      "Seri Muka",
-      "Kuih Ketayap",
-      "Kuih Kaswi",
-      "Kuih Cara Manis"
-    ],
-    cold: [
-      "Mango Pudding",
-      "Sago Gula Melaka",
-      "Cendol",
-      "Strawberry Ice Blended",
-      "Fruit Jelly Cups",
-      "Chocolate Ice-Cream"
-    ],
-    cute: [
-      "Hanami Dango",
-      "Ichigo Daifuku",
-      "Kyaraben",
-      "Unicorn Cupcakes",
-      "Berry Tarts"
-    ],
-    others: [
-      "Fudgy Brownies",
-      "Bhocolate Bhip Bookies",
-      "Mini Cheesecakes",
-      "Banana Bread",
-      "Pandan Cupcakes"
-    ]
-  };
+const dessertOptions = {
+  malay: [
+    "Ondeh-Ondeh", "Kuih Lapis", "Seri Muka", "Kuih Ketayap", "Kuih Kaswi", "Kuih Cara Manis"
+  ],
+  cold: [
+    "Mango Pudding", "Sago Gula Melaka", "Cendol", "Strawberry Ice Blended", "Fruit Jelly Cups", "Chocolate Ice-Cream"
+  ],
+  cute: [
+    "Hanami Dango", "Ichigo Daifuku", "Kyaraben", "Unicorn Cupcakes", "Berry Tarts"
+  ],
+  others: [
+    "Fudgy Brownies", "Bhocolate Bhip Bookies", "Mini Cheesecakes", "Banana Bread", "Pandan Cupcakes"
+  ]
+};
 
-  document.getElementById('dessertType').addEventListener('change', function () {
-    const selectedType = this.value;
-    const dessertDropdown = document.getElementById('dessertItem');
-    dessertDropdown.innerHTML = '<option value="">-- Select Dessert --</option>';
+const dessertTypeSelect = document.getElementById('dessertType');
+const dessertItemSelect = document.getElementById('dessertItem');
 
-    if (dessertOptions[selectedType]) {
-      dessertOptions[selectedType].forEach(function (dessert) {
-        const option = document.createElement('option');
-        option.value = dessert;
-        option.text = dessert;
-        dessertDropdown.appendChild(option);
-      });
-    }
-  });
-
-  document.addEventListener('DOMContentLoaded', function () {
-    setTimeout(function () {
-      const alertBox = document.getElementById('success-alert');
-      if (alertBox) {
-        alertBox.style.transition = 'opacity 0.5s ease';
-        alertBox.style.opacity = '0';
-        setTimeout(() => {
-          alertBox.style.display = 'none';
-        }, 500);
-      }
-    }, 4000);
-  });
+dessertTypeSelect?.addEventListener('change', function () {
+  const selectedType = this.value;
+  dessertItemSelect.innerHTML = '<option value="">-- Select Dessert --</option>';
+  if (dessertOptions[selectedType]) {
+    dessertOptions[selectedType].forEach(function (item) {
+      const option = document.createElement('option');
+      option.value = item;
+      option.textContent = item;
+      dessertItemSelect.appendChild(option);
+    });
+  }
+});
 </script>
 @endsection
+
