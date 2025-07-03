@@ -65,27 +65,144 @@ Based on the given rubrics, each group member focused on specific security crite
 
 ## 🔒 Rubric-based Security Enhancements
 
-### 🧾 Rubrics 1–4 (Handled by Umar)
+### 🧾 RUBRICS 1–4 (Handled by Umar)
+### 🧾 Rubric 1: Input Validation
 
----
+**Before:**  
+- OrderController accepted raw input without any validation.
+- Login and registration inputs lacked strict type/format enforcement.
 
-### ✅ **Rubric 1: Input Validation**
+**Fix Implemented:**
+- Applied strict validation rules using Laravel's `$request->validate()` function.
+- Enforced email formatting (`rfc`, `dns`), input length limits, and regex-based password complexity.
 
-**Issue (Before):**  
-- No validation in `OrderController`
-- Basic rules only for registration/login
+**Code:**
 
-**Fix (After):**
-- Applied strict server-side validation:
+`LoginRequest.php`:
+```php
+public function rules(): array
+{
+    return [
+        'email' => ['required', 'string', 'email:rfc,dns', 'max:255'],
+        'password' => ['required', 'string', 'min:8'],
+    ];
+}
+```
+`RegisteredUserController.php`:
 ```php
 $request->validate([
-  'name' => 'required|string|max:100',
-  'email' => 'required|email:rfc,dns|max:255|unique:users,email',
-  'password' => [
-    'required', 'string', 'min:8', 'confirmed',
-    'regex:/[A-Z]/', 'regex:/[a-z]/', 'regex:/[0-9]/', 'regex:/[@$!%*#?&]/',
-  ],
+    'name' => 'required|string|max:100',
+    'email' => 'required|email:rfc,dns|max:255|unique:users,email',
+    'password' => [
+        'required',
+        'string',
+        'min:8',
+        'confirmed',
+        'regex:/[A-Z]/',      // uppercase
+        'regex:/[a-z]/',      // lowercase
+        'regex:/[0-9]/',      // digit
+        'regex:/[@$!%*#?&]/', // special character
+    ],
 ]);
+```
+`OrderController.php`:
+```php
+$request->validate([
+    'customer_name' => 'required|string|max:100',
+    'dessert_type' => 'required|string|in:Cake,Pie,Tart,Pudding',
+    'dessert_item' => 'required|string|max:100',
+    'quantity' => 'required|integer|min:1|max:50',
+]);
+
+```
+---
+### 🧾 Rubric 2: Error Handling & Information Disclosure
+
+**Before:**  
+- APP_DEBUG=true risked exposing internal error messages and stack traces.
+- No custom error views existed for 404 or 500 responses.
+
+**Fix Implemented:**
+- Disabled debug mode in production via .env
+- Used Handler.php to show custom views for errors
+- Created user-friendly 500.blade.php and 404.blade.php
+
+**Code:**
+
+`.env`:
+```php
+APP_DEBUG=false
+```
+`Handler.php`:
+```php
+public function render($request, Throwable $exception)
+{
+    if (app()->environment('production')) {
+        $status = method_exists($exception, 'getStatusCode') ? $exception->getStatusCode() : 500;
+        return response()->view("errors.$status", [], $status);
+    }
+
+    return parent::render($request, $exception);
+}
+
+```
+`resources/views/errors/500.blade.php`:
+```php
+<h1>Something went wrong</h1>
+<p>We're sorry, but an unexpected error occurred.</p>
+```
+---
+### 🧾 Rubric 3: Password Storage
+
+**Before:**  
+- Passwords were hashed using Laravel default (bcrypt), which is secure but not the strongest available.
+
+**Fix Implemented:**
+- Passwords securely hashed via Hash::make()
+- Hashing algorithm upgraded to argon2id (memory-hard, GPU-resistant)
+
+**Code:**
+
+`RegisteredUserController.php`:
+```php
+'password' => Hash::make($request->password),
+```
+`config/hashing.php`:
+```php
+'default' => 'argon2id',
+```
+---
+### 🧾 Rubric 4: Password Policies
+
+**Before:**  
+- No password complexity rules
+- No lockout mechanism on failed logins
+
+**Fix Implemented:**
+- Applied strict complexity rules via regex in validation
+- Enabled Laravel's rate limiter to block after 5 failed login attempts (1 min delay)
+
+**Code:**
+
+`Password validation (RegisteredUserController.php)`:
+```php
+    'password' => [
+        'required',
+        'string',
+        'min:8',
+        'confirmed',
+        'regex:/[A-Z]/',      // uppercase
+        'regex:/[a-z]/',      // lowercase
+        'regex:/[0-9]/',      // digit
+        'regex:/[@$!%*#?&]/', // special character
+    ],
+```
+`Login rate limiting (LoginRequest.php)`:
+```php
+if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
+    return;
+}
+// Lockout occurs after 5 attempts
 ```
 ---
 
