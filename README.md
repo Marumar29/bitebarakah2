@@ -86,7 +86,7 @@ $request->validate([
     'regex:/[A-Z]/', 'regex:/[a-z]/', 'regex:/[0-9]/', 'regex:/[@$!%*#?&]/',
   ],
 ]);
-
+```
 ---
 
 ### ✅ Rubric 5: Authentication – Session Management
@@ -111,7 +111,7 @@ SESSION_LIFETIME=60
 'secure' => env('SESSION_SECURE_COOKIE', true),
 'http_only' => true,
 'same_site' => 'lax',
-
+```
 ---
 
 ### ✅ Rubric 6: Authentication – Multi-Factor Authentication
@@ -122,7 +122,7 @@ To enhance security, 2FA (Time-based One-Time Password) was added for admin user
 Admins can enable 2FA from a dedicated page, generating a secret key and recovery codes. These can be used with apps like Google Authenticator.
 
 **Code:**
-
+```php
 // Enable 2FA: routes/web.php
 use Illuminate\Support\Str;
 use PragmaRX\Google2FA\Google2FA;
@@ -152,7 +152,7 @@ Route::post('/admin/2fa/enable', function () {
         <button type="submit">Enable 2FA</button>
     </form>
 @endif
-
+```
 ---
 
 ### ✅ Rubric 7: Authorization – Default Permissions
@@ -168,7 +168,7 @@ Basic access control is enforced:
 -Non-admin users trying to access admin routes are shown a 403 Forbidden page.
 
 **Code:**
-
+```php
 // web.php
 Route::get('/', function () {
     return Auth::check() ? redirect('/home') : redirect()->route('register');
@@ -182,7 +182,7 @@ Route::get('/home', function () {
 if (!auth()->check() || !auth()->user()->is_admin) {
     abort(403); // Forbidden access
 }
-
+```
 ---
 
 ### ✅ Rubric 8: Authorization – Role-Based Access Control (RBAC)
@@ -198,7 +198,7 @@ Access to admin routes is protected based on roles:
 -Only users with is_admin = 1 can access these routes
 
 **Code:**
-
+```php
 // Migration
 Schema::table('users', function (Blueprint $table) {
     $table->boolean('is_admin')->default(false);
@@ -219,7 +219,7 @@ Route::middleware(['auth', 'is_admin'])->group(function () {
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
     Route::get('/admin/orders', [AdminController::class, 'viewOrders'])->name('admin.orders');
 });
-
+```
 ---
 
 **How to Test**
